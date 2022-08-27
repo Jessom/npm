@@ -11,7 +11,8 @@ class SwitchSDK {
 			method: 'POST',
 			data: {
 				"plateform": plateform,
-				"identify": identify
+				"identify": identify,
+				"sys": uni.$u.sys()
 			},
 			success: ({data}) => {
 				this.handler(data)

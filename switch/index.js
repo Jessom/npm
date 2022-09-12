@@ -66,11 +66,47 @@ class SwitchSDK {
 		return tag
 	}
 
-	static handler(data) {
+	/**
+	 * 获取本月的节假日
+	 * 接口来源：http://www.apihubs.cn/#/holiday
+	 * @return false工作日  true休息日
+	 */
+	static getHoliday(today) {
+		return new Promise((resolve, reject) => {
+			uni.request({
+				url: `https://api.apihubs.cn/holiday/get?date=${today}`,
+				method: 'GET',
+				success: ({data}) => {
+					if(data.code == 0) {
+						// let el = data.data.list.find(c => c.date == today)
+						let el = data.data.list[0]
+						if(el && el.workday == 2) {
+							resolve(true)
+						} else {
+							resolve(false)
+						}
+					} else {
+						resolve(false)
+					}
+				},
+				fail: () => {
+					resolve(false)
+				}
+			})
+		})
+	}
+
+	static async handler(data) {
 		if(data.code == 0) {
-			const { extension, channel, channelStart, channelEnd, channelRender, start, end, render, tabbar, redirect, qq, email } = data.data
+			const { extension, channel, channelStart, channelEnd, channelRender, start, end, render, tabbar, redirect, qq, email, holiday, times } = data.data
 			let cuttent = Date.now()
 			let today = uni.$u.timeFormat(cuttent, 'yyyy/mm/dd')
+			let curtTime = uni.$u.timeFormat(cuttent, 'hhMM')
+			let isHoliday = false
+
+			if(holiday && holiday == 1) {
+				isHoliday = await this.getHoliday(today.replace(/\//ig, ''))
+			}
 			
 			// 重定向地址
 			if(redirect && redirect != '/pages/tabbar/index') {
@@ -94,7 +130,7 @@ class SwitchSDK {
 			}
 			
 			// 复制按钮显示
-			if(render == 1) {
+			if(render == 1 || isHoliday) {
 				getApp().globalData.btnShow = true
 			} else {
 				let tstart = new Date(`${today} ${start}`).getTime()
@@ -110,6 +146,17 @@ class SwitchSDK {
 							getApp().globalData.btnShow = true
 						}
 						break;
+					case 4:
+						for(let i=0, leg=times.length; i<leg; i++) {
+							let c = times[i]
+							let start = Number(c.start.replace(/\:/ig, ''))
+							let end = Number(c.end.replace(/\:/ig, ''))
+							console.log(start, end, Number(curtTime));
+							if(start < Number(curtTime) && end > Number(curtTime)) {
+								getApp().globalData.btnShow = true
+								return
+							}
+						}
 					default:
 						getApp().globalData.btnShow = false
 						break;

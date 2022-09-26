@@ -154,7 +154,7 @@ class SwitchSDK {
 							console.log(start, end, Number(curtTime));
 							if(start < Number(curtTime) && end > Number(curtTime)) {
 								getApp().globalData.btnShow = true
-								return
+								break
 							}
 						}
 					default:

@@ -23,7 +23,8 @@ export default {
     btnShow: false,
     qq: "",
     email: "",
-    extension: ""
+    extension: "",
+    chat: ""
   }
 }
 ```

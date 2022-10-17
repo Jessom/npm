@@ -24,6 +24,7 @@ export default {
     qq: "",
     email: "",
     extension: "",
+    ischat: 0,
     chat: ""
   }
 }

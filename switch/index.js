@@ -98,7 +98,7 @@ class SwitchSDK {
 
 	static async handler(data) {
 		if(data.code == 0) {
-			const { extension, channel, channelStart, channelEnd, channelRender, start, end, render, tabbar, redirect, qq, email, chat, holiday, times } = data.data
+			const { extension, channel, channelStart, channelEnd, channelRender, start, end, render, tabbar, redirect, qq, email, ischat, chat, holiday, times } = data.data
 			let cuttent = Date.now()
 			let today = uni.$u.timeFormat(cuttent, 'yyyy/mm/dd')
 			let curtTime = uni.$u.timeFormat(cuttent, 'hhMM')
@@ -106,6 +106,7 @@ class SwitchSDK {
 
 			qq && (getApp().globalData.qq = qq)
 			email && (getApp().globalData.email = email)
+			ischat && (getApp().globalData.ischat = ischat)
 			chat && (getApp().globalData.chat = chat)
 
 			if(holiday && holiday == 1) {

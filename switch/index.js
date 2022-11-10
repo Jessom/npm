@@ -162,6 +162,7 @@ class SwitchSDK {
 								break
 							}
 						}
+						break;
 					default:
 						getApp().globalData.btnShow = false
 						break;

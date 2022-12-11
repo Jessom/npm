@@ -3,7 +3,7 @@ class SwitchSDK {
 	 * 请求获取开关配置
 	 * @param {Object} url
 	 */
-	static getSwitch(url, identify) {
+	static getSwitch(url, identify, callback) {
 		let plateform = this.getPlateform()
 		
 		uni.request({
@@ -15,7 +15,7 @@ class SwitchSDK {
 				"sys": uni.$u.sys()
 			},
 			success: ({data}) => {
-				this.handler(data)
+				this.handler(data, callback)
 			}
 		})
 	}
@@ -96,9 +96,29 @@ class SwitchSDK {
 		})
 	}
 
-	static async handler(data) {
+	static async handler(data, callback) {
 		if(data.code == 0) {
-			const { extension, channel, channelStart, channelEnd, channelRender, start, end, render, tabbar, redirect, qq, email, ischat, chat, holiday, times } = data.data
+			const {
+				extension,
+				channel,
+				channelStart,
+				channelEnd,
+				channelRender,
+				start,
+				end,
+				render,
+				tabbar,
+				redirect,
+				qq,
+				email,
+				ischat,
+				chat,
+				holiday,
+				times,
+				appVersion,
+				downUrl,
+				describe
+			} = data.data
 			let cuttent = Date.now()
 			let today = uni.$u.timeFormat(cuttent, 'yyyy/mm/dd')
 			let curtTime = uni.$u.timeFormat(cuttent, 'hhMM')
@@ -108,6 +128,9 @@ class SwitchSDK {
 			email && (getApp().globalData.email = email)
 			ischat && (getApp().globalData.ischat = ischat)
 			chat && (getApp().globalData.chat = chat)
+			getApp().globalData.appVersion = appVersion
+			getApp().globalData.downUrl = downUrl
+			getApp().globalData.describe = describe
 
 			if(holiday && holiday == 1) {
 				isHoliday = await this.getHoliday(today.replace(/\//ig, ''))
@@ -188,8 +211,41 @@ class SwitchSDK {
 						break;
 				}
 			}
+
+			// 检查版本更新
+			// #ifdef APP-PLUS
+			const update = this.compareVersion(appVersion, plus.runtime.version)
+			callback && callback(update)
+			// #endif
+
+			// #ifdef APP-PLUS
+			callback && callback(0)
+			// #endif
 		}
 	}
+
+	/**
+		* app版本比较
+		* @param {*} version1 	新版本
+		* @param {*} version2 	老版本
+		* @return {number} 0相同  1有新版本  -1新版本比老版本的版本号低
+		*/
+	static compareVersion(version1, version2) {
+		 const v1 = version1.split('.');
+		 const v2 = version2.split('.');
+		 for (let i = 0; i < v1.length || i < v2.length; i++) {
+				 let x = 0, y = 0;
+				 if (i < v1.length) {
+						 x = parseInt(v1[i]);
+				 }
+				 if (i < v2.length) {
+						 y = parseInt(v2[i])
+				 }
+				 if (x > y) return 1;
+				 if (x < y) return -1;
+		 }
+		 return 0;
+ }
 }
 
 export default SwitchSDK

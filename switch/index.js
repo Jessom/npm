@@ -215,7 +215,10 @@ class SwitchSDK {
 			// 检查版本更新
 			// #ifdef APP-PLUS
 			const update = this.compareVersion(appVersion, plus.runtime.version)
-			callback && callback(update)
+			callback && callback({
+				update: update,
+				data: data.data
+			})
 			// #endif
 
 			// #ifdef APP-PLUS

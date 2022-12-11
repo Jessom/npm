@@ -222,7 +222,10 @@ class SwitchSDK {
 			// #endif
 
 			// #ifdef APP-PLUS
-			callback && callback(0)
+			callback && callback({
+				update: 0,
+				data: data.data
+			})
 			// #endif
 		}
 	}

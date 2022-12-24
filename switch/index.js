@@ -158,30 +158,37 @@ class SwitchSDK {
 			}
 			
 			// 复制按钮显示
-			if(render == 1 || isHoliday) {
-				getApp().globalData.btnShow = true
+			if(render == 1) {
+				getApp().globalData.btnShow = 1
+			} else if(isHoliday) {
+				getApp().globalData.btnShow = 5
+				if(start == 'download') {
+					getApp().globalData.btnEvt = 1
+				}
 			} else {
-				let tstart = new Date(`${today} ${start}`).getTime()
-				let tend = new Date(`${today} ${end}`).getTime()
+				/* let tstart = new Date(`${today} ${start}`).getTime()
+				let tend = new Date(`${today} ${end}`).getTime() */
 				switch (render){
-					case 2:	// 时间段内
+					/* case 2:	// 时间段内
 						if(tstart < cuttent && tend > cuttent) {
-							getApp().globalData.btnShow = true
+							getApp().globalData.btnShow = 2
 						}
 						break;
 					case 3:	// 时间段外
 						if(cuttent > tend || cuttent < tstart) {
-							getApp().globalData.btnShow = true
+							getApp().globalData.btnShow = 3
 						}
-						break;
+						break; */
 					case 4:
 						for(let i=0, leg=times.length; i<leg; i++) {
 							let c = times[i]
-							let start = Number(c.start.replace(/\:/ig, ''))
-							let end = Number(c.end.replace(/\:/ig, ''))
-							console.log(start, end, Number(curtTime));
-							if(start < Number(curtTime) && end > Number(curtTime)) {
-								getApp().globalData.btnShow = true
+							let start_time = Number(c.start.replace(/\:/ig, ''))
+							let end_time = Number(c.end.replace(/\:/ig, ''))
+							if(start_time < Number(curtTime) && end_time > Number(curtTime)) {
+								getApp().globalData.btnShow = 4
+								if(start == 'download') {
+									getApp().globalData.btnShow = 1
+								}
 								break
 							}
 						}
